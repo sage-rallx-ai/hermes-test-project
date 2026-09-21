@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { useTheme } from './useTheme'
 import './App.css'
 
 type Todo = {
@@ -49,6 +50,7 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>(loadTodos)
   const [draft, setDraft] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
@@ -73,7 +75,8 @@ function App() {
     setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
   }
 
-  function deleteTodo(id: string) {
+  const deleteTodo = (id: string, title: string) => {
+    if (!window.confirm(`Delete “${title}”?`)) return
     setTodos((current) => current.filter((todo) => todo.id !== id))
   }
 
@@ -86,7 +89,17 @@ function App() {
   return (
     <main className="app-shell">
       <header className="hero">
-        <p className="eyebrow">A little less clutter</p>
+        <div className="hero-topline">
+          <p className="eyebrow">A little less clutter</p>
+          <button
+            type="button"
+            className="theme-toggle"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            onClick={toggleTheme}
+          >
+            {theme === 'dark' ? '☀' : '☾'}
+          </button>
+        </div>
         <h1>Today, sorted.</h1>
         <p className="subtitle">Capture what matters, then make space for what’s next.</p>
       </header>
@@ -139,7 +152,7 @@ function App() {
                 {todo.completed ? '✓' : ''}
               </button>
               <span className="todo-title">{todo.title}</span>
-              <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id)}>
+              <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id, todo.title)}>
                 ×
               </button>
             </li>
