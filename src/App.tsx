@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { useTheme } from './useTheme'
 import './App.css'
 
 type Todo = {
@@ -9,10 +10,8 @@ type Todo = {
 }
 
 type Filter = 'all' | 'active' | 'completed'
-type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'hermes-test-project.todos'
-const THEME_KEY = 'hermes-test-project.theme'
 
 function createTodoId() {
   if (typeof globalThis.crypto?.randomUUID === 'function') {
@@ -26,12 +25,6 @@ function createTodoId() {
   }
 
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`
-}
-
-function loadTheme(): Theme {
-  const stored = localStorage.getItem(THEME_KEY)
-  if (stored === 'light' || stored === 'dark') return stored
-  return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 function loadTodos(): Todo[] {
@@ -57,12 +50,7 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>(loadTodos)
   const [draft, setDraft] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
-  const [theme, setTheme] = useState<Theme>(loadTheme)
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme
-    localStorage.setItem(THEME_KEY, theme)
-  }, [theme])
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
@@ -107,7 +95,7 @@ function App() {
             type="button"
             className="theme-toggle"
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            onClick={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+            onClick={toggleTheme}
           >
             {theme === 'dark' ? '☀' : '☾'}
           </button>
