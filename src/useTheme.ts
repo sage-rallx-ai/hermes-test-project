@@ -4,13 +4,13 @@ export type Theme = 'light' | 'dark'
 
 const THEME_KEY = 'hermes-test-project.theme'
 
-function loadTheme(): Theme {
+const loadTheme = (): Theme => {
   const stored = localStorage.getItem(THEME_KEY)
   if (stored === 'light' || stored === 'dark') return stored
   return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-export function useTheme() {
+export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(loadTheme)
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function useTheme() {
     localStorage.setItem(THEME_KEY, theme)
   }, [theme])
 
-  function toggleTheme() {
+  const toggleTheme = () => {
     setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
   }
 

@@ -75,7 +75,7 @@ function App() {
     setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
   }
 
-  function deleteTodo(id: string, title: string) {
+  const deleteTodo = (id: string, title: string) => {
     if (!window.confirm(`Delete “${title}”?`)) return
     setTodos((current) => current.filter((todo) => todo.id !== id))
   }
