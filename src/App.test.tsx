@@ -31,6 +31,17 @@ describe('todo app', () => {
     fireEvent.submit(input.closest('form')!)
     expect(screen.getByText('Works over HTTP')).toBeInTheDocument()
   })
+  it('switches and persists dark mode', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toBeInTheDocument()
+
+    cleanup()
+    render(<App />)
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+
   it('asks for confirmation before deleting a task', () => {
     const confirm = vi.spyOn(window, 'confirm')
     render(<App />)
