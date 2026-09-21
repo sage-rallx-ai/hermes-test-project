@@ -1,3 +1,20 @@
 # hermes-test-project
 
-Development happens on the `dev` branch. See the pull request for the initial application.
+A small, accessible React todo list with local browser persistence.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Quality checks
+
+```bash
+npm run test
+npm run lint
+npm run build
+```
+
+Tasks support add, complete, delete, filtering, counts, and `localStorage` persistence.
