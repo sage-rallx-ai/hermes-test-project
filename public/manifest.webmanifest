@@ -1,0 +1,19 @@
+{
+  "name": "Today, sorted.",
+  "short_name": "Today",
+  "description": "A calm, local-first todo list.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f7f3",
+  "theme_color": "#c96a4b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
