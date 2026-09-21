@@ -1,8 +1,11 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
 
 beforeEach(() => localStorage.clear())
 
@@ -18,6 +21,16 @@ describe('todo app', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(1)
   })
 
+  it('adds a task when randomUUID is unavailable', () => {
+    vi.stubGlobal('crypto', {
+      getRandomValues: (values: Uint32Array) => values.fill(1),
+    })
+    render(<App />)
+    const input = screen.getByLabelText('Add a task')
+    fireEvent.change(input, { target: { value: 'Works over HTTP' } })
+    fireEvent.submit(input.closest('form')!)
+    expect(screen.getByText('Works over HTTP')).toBeInTheDocument()
+  })
   it('toggles and deletes tasks', () => {
     render(<App />)
     const input = screen.getByLabelText('Add a task')
