@@ -12,6 +12,20 @@ type Filter = 'all' | 'active' | 'completed'
 
 const STORAGE_KEY = 'hermes-test-project.todos'
 
+function createTodoId() {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID()
+  }
+
+  if (typeof globalThis.crypto?.getRandomValues === 'function') {
+    const values = new Uint32Array(4)
+    globalThis.crypto.getRandomValues(values)
+    return Array.from(values, (value) => value.toString(16).padStart(8, '0')).join('-')
+  }
+
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+}
+
 function loadTodos(): Todo[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
@@ -51,7 +65,7 @@ function App() {
     event.preventDefault()
     const title = draft.trim()
     if (!title) return
-    setTodos((current) => [...current, { id: crypto.randomUUID(), title, completed: false }])
+    setTodos((current) => [...current, { id: createTodoId(), title, completed: false }])
     setDraft('')
   }
 
