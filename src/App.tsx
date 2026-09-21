@@ -73,7 +73,8 @@ function App() {
     setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
   }
 
-  function deleteTodo(id: string) {
+  function deleteTodo(id: string, title: string) {
+    if (!window.confirm(`Delete “${title}”?`)) return
     setTodos((current) => current.filter((todo) => todo.id !== id))
   }
 
@@ -139,7 +140,7 @@ function App() {
                 {todo.completed ? '✓' : ''}
               </button>
               <span className="todo-title">{todo.title}</span>
-              <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id)}>
+              <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id, todo.title)}>
                 ×
               </button>
             </li>

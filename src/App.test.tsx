@@ -31,6 +31,22 @@ describe('todo app', () => {
     fireEvent.submit(input.closest('form')!)
     expect(screen.getByText('Works over HTTP')).toBeInTheDocument()
   })
+  it('asks for confirmation before deleting a task', () => {
+    const confirm = vi.spyOn(window, 'confirm')
+    render(<App />)
+    const input = screen.getByLabelText('Add a task')
+    fireEvent.change(input, { target: { value: 'Keep this task' } })
+    fireEvent.submit(input.closest('form')!)
+
+    confirm.mockReturnValueOnce(false)
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Keep this task' }))
+    expect(screen.getByText('Keep this task')).toBeInTheDocument()
+
+    confirm.mockReturnValueOnce(true)
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Keep this task' }))
+    expect(screen.queryByText('Keep this task')).not.toBeInTheDocument()
+  })
+
   it('toggles and deletes tasks', () => {
     render(<App />)
     const input = screen.getByLabelText('Add a task')
@@ -38,6 +54,7 @@ describe('todo app', () => {
     fireEvent.submit(input.closest('form')!)
     fireEvent.click(screen.getByRole('button', { name: 'Complete Ship it' }))
     expect(screen.getByRole('button', { name: 'Mark Ship it active' })).toHaveAttribute('aria-pressed', 'true')
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
     fireEvent.click(screen.getByRole('button', { name: 'Delete Ship it' }))
     expect(screen.queryByText('Ship it')).not.toBeInTheDocument()
   })
