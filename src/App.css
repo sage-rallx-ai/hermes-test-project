@@ -55,6 +55,11 @@ h2 { font-size: 2rem; }
 .completed .check-button { border-color: var(--accent); background: var(--accent); }
 .todo-title { flex: 1; overflow-wrap: anywhere; line-height: 1.4; }
 .completed .todo-title { color: var(--muted); text-decoration: line-through; }
+.edit-button, .cancel-button { border: 0; border-radius: 8px; padding: 7px 9px; color: var(--muted); background: transparent; font-size: .78rem; font-weight: 700; }
+.edit-button:hover, .cancel-button:hover { color: var(--accent-dark); background: var(--sage); }
+.edit-form { display: flex; flex: 1; gap: 8px; align-items: center; }
+.edit-form input { min-width: 0; flex: 1; border: 1px solid var(--accent); border-radius: 8px; padding: 9px 10px; color: var(--ink); background: var(--card); outline: none; }
+.edit-form button[type="submit"] { border: 0; border-radius: 8px; padding: 8px 11px; color: white; background: var(--accent); font-size: .78rem; font-weight: 700; }
 .delete-button { border: 0; padding: 7px; color: #9ba9a0; background: transparent; font-size: 1.35rem; line-height: 1; }
 .delete-button:hover { color: var(--accent-dark); }
 .empty-state { margin: 0; padding: 36px 30px 40px; color: var(--muted); text-align: center; }

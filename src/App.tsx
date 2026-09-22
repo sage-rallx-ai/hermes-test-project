@@ -50,6 +50,8 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>(loadTodos)
   const [draft, setDraft] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editDraft, setEditDraft] = useState('')
   const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
@@ -73,6 +75,24 @@ function App() {
 
   function toggleTodo(id: string) {
     setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)))
+  }
+
+  const startEditing = (todo: Todo) => {
+    setEditingId(todo.id)
+    setEditDraft(todo.title)
+  }
+
+  const cancelEditing = () => {
+    setEditingId(null)
+    setEditDraft('')
+  }
+
+  const saveEdit = (event: FormEvent<HTMLFormElement>, id: string) => {
+    event.preventDefault()
+    const title = editDraft.trim()
+    if (!title) return
+    setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, title } : todo)))
+    cancelEditing()
   }
 
   const deleteTodo = (id: string, title: string) => {
@@ -142,19 +162,38 @@ function App() {
         <ul className="todo-list" aria-live="polite">
           {visibleTodos.map((todo) => (
             <li className={todo.completed ? 'todo-item completed' : 'todo-item'} key={todo.id}>
-              <button
-                type="button"
-                className="check-button"
-                aria-label={todo.completed ? `Mark ${todo.title} active` : `Complete ${todo.title}`}
-                aria-pressed={todo.completed}
-                onClick={() => toggleTodo(todo.id)}
-              >
-                {todo.completed ? '✓' : ''}
-              </button>
-              <span className="todo-title">{todo.title}</span>
-              <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id, todo.title)}>
-                ×
-              </button>
+              {editingId === todo.id ? (
+                <form className="edit-form" onSubmit={(event) => saveEdit(event, todo.id)}>
+                  <label className="sr-only" htmlFor={`edit-todo-${todo.id}`}>Edit {todo.title}</label>
+                  <input
+                    id={`edit-todo-${todo.id}`}
+                    value={editDraft}
+                    onChange={(event) => setEditDraft(event.target.value)}
+                    autoFocus
+                  />
+                  <button type="submit">Save</button>
+                  <button type="button" className="cancel-button" onClick={cancelEditing}>Cancel</button>
+                </form>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="check-button"
+                    aria-label={todo.completed ? `Mark ${todo.title} active` : `Complete ${todo.title}`}
+                    aria-pressed={todo.completed}
+                    onClick={() => toggleTodo(todo.id)}
+                  >
+                    {todo.completed ? '✓' : ''}
+                  </button>
+                  <span className="todo-title">{todo.title}</span>
+                  <button type="button" className="edit-button" aria-label={`Edit ${todo.title}`} onClick={() => startEditing(todo)}>
+                    Edit
+                  </button>
+                  <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id, todo.title)}>
+                    ×
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>
