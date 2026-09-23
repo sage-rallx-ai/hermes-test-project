@@ -58,6 +58,25 @@ describe('todo app', () => {
     expect(screen.queryByText('Keep this task')).not.toBeInTheDocument()
   })
 
+  it('edits a task and can cancel without changing it', () => {
+    render(<App />)
+    const input = screen.getByLabelText('Add a task')
+    fireEvent.change(input, { target: { value: 'Original title' } })
+    fireEvent.submit(input.closest('form')!)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Original title' }))
+    const editInput = screen.getByLabelText('Edit Original title')
+    fireEvent.change(editInput, { target: { value: 'Updated title' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(screen.getByText('Updated title')).toBeInTheDocument()
+    expect(screen.queryByText('Original title')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Updated title' }))
+    fireEvent.change(screen.getByLabelText('Edit Updated title'), { target: { value: 'Discarded title' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.getByText('Updated title')).toBeInTheDocument()
+  })
+
   it('toggles and deletes tasks', () => {
     render(<App />)
     const input = screen.getByLabelText('Add a task')
