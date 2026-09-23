@@ -186,8 +186,10 @@ function App() {
                     {todo.completed ? '✓' : ''}
                   </button>
                   <span className="todo-title">{todo.title}</span>
-                  <button type="button" className="edit-button" aria-label={`Edit ${todo.title}`} onClick={() => startEditing(todo)}>
-                    Edit
+                  <button type="button" className="edit-button" aria-label={`Edit ${todo.title}`} title="Edit task" onClick={() => startEditing(todo)}>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                      <path d="m16.86 3.49 3.65 3.65-11.8 11.8-4.06.41.41-4.06 11.8-11.8ZM14.8 5.55l3.65 3.65M4.65 19.35l2.13-.22" />
+                    </svg>
                   </button>
                   <button type="button" className="delete-button" aria-label={`Delete ${todo.title}`} onClick={() => deleteTodo(todo.id, todo.title)}>
                     ×
